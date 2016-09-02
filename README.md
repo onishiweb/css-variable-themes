@@ -7,7 +7,7 @@ A demo showing how to edit a webpage theme using custom variables.
 Installing
 ----------
 
-There are no external resources to use this example, just native HTML and CSS in the supported browsers. Open the `index.html` page in your browser or [visit the GitHub pages site]() to view the example online.
+There are no external resources to use this example, just native HTML and CSS in the supported browsers. Open the `index.html` page in your browser or [visit the GitHub pages site](https://onishiweb.github.io/css-variable-themes/) to view the example online.
 
 ### Browser requirements
 
