@@ -68,12 +68,21 @@
 		background-color: #666;
 	}
 
+	main .container {
+		display: flex;
+		flex-wrap: nowrap;
+		flex-direction: row;
+		margin: 20px auto;
+	}
+
+	article {
+		flex-basis: 65%;
+		margin-right: 5%;
+	}
+
 	aside {
-		float: right;
-		width: 30%;
-		height: 200px;
-		margin: 0 0 20px 20px;
-		padding: 20px 0 0 40px;
+		flex-grow: 1;
+		padding: 20px;
 		background-color: #ccc;
 	}
 
@@ -157,10 +166,15 @@
 			const inputName = this.getAttribute('name');
 			const newColor = this.value;
 
-			const textColor = getContrastYIQ(newColor.substring(1));
+
 
 			document.documentElement.style.setProperty('--theme-'+inputName, newColor);
-			document.documentElement.style.setProperty('--theme-text', textColor);
+
+			if (inputName === 'primary') {
+				const textColor = getContrastYIQ(newColor.substring(1));
+				document.documentElement.style.setProperty('--theme-text', textColor);
+			}
+
 		}
 
 		function updateSelectors(primaryInput, secondaryInput) {
@@ -188,8 +202,8 @@
 <body>
 	<header>
 		<div class="container">
-			<h1>CSS Variable Themes</h1>
-			<p>A demo using CSS variables how to edit a webpage theme using custom variables.</p>
+			<h1>Creating customisable themes with CSS Variables</h1>
+			<p>Explore the new powers arriving on the web with CSS Variables in both CSS and JavaScript!</p>
 		</div>
 	</header>
 	<nav>
@@ -204,6 +218,14 @@
 	</nav>
 	<main>
 		<div class="container">
+			<article>
+				<h2>The tutorial</h2>
+				<p>As developers the ability to store common values for reuse is extremely valuable, it saves time in both authoring and maintaining a codebase. This is why you’ll find variables a key part of any CSS pre-processor, such as Sass or LESS. The CSS Variables spec finally introduces this ability natively to CSS and there’s now a good level of browser support available to start putting them into use.</p>
+				<p>However, you may have been thinking, since CSS pre-processors have variables already and are so prevalent these days, what’s the big deal? Fuelled by this I decided to take a look at what CSS Variables will offer developers beyond simply storing values for reuse.</p>
+				<p>There are two interesting aspects I’ve found lately when working with CSS Variables. Firstly they, like all CSS, are susceptible to the cascade. This means that you can give a CSS Variable a new value and it only effect the children of that CSS rule in the document.</p>
+				<p>The second aspect is that CSS Variables can be accessed and updated by JavaScript at runtime. This means that through user actions, you could update a the styles on your site easily through a small amount of JavaScript. In this case, I’m going to look at using colour inputs to instantly update the theme of a website.</p>
+				<p><small>Demo by <a href="http://adamonishi.com">Adam Onishi</a></small></p>
+			</article>
 			<aside>
 				<h2>Select a new theme:</h2>
 				<label for="primary-theme-color">Primary color</label>
@@ -211,10 +233,6 @@
 				<label for="secondary-theme-color">Secondary color</label>
 				<input type="color" id="secondary-theme-color" name="secondary" value="#000000">
 			</aside>
-			<p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusm dtempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam,quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodoconsequat. Duis aute irure dolor in reprehenderit in voluptate velit essecillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat nonproident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
-			<p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusm dtempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam,quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodoconsequat. Duis aute irure dolor in reprehenderit in voluptate velit essecillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat nonproident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
-			<p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusm dtempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam,quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodoconsequat. Duis aute irure dolor in reprehenderit in voluptate velit essecillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat nonproident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
-			<p><small>Demo by <a href="http://adamonishi.com">Adam Onishi</a></small></p>
 		</div>
 	</main>
 	<footer>
