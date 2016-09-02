@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>CSS Variable Themes</title>
+
+	<style>
+	:root {
+		--theme-primary: #f00;
+		--theme-secondary: rgb(0,255,0);
+		--theme-text: #fff;
+		--theme-links: purple;
+	}
+
+	body, html {
+		margin: 0;
+		padding: 0;
+	}
+
+	body {
+		font-family: Helvetica, Arial, sans-serif;
+		font-size: 16px;
+		line-height: 1.5;
+	}
+
+	a {
+		color: var(--theme-links);
+		text-decoration: none;
+		border-bottom: 1px solid var(--theme-links);
+	}
+
+	.container {
+		width: 90%;
+		max-width: 100%;
+		margin: 0 auto;
+	}
+
+	header {
+		width: 100%;
+		padding: 25px 0;
+		color: var(--theme-text);
+		background-color: var(--theme-primary);
+	}
+
+	nav {
+		width: 100%;
+		background: #333;
+	}
+
+	nav ul {
+		list-style: none;
+		margin: 0;
+		margin-left: -15px;
+		padding: 0;
+	}
+
+	nav li {
+		display: inline;
+	}
+
+	nav a {
+		display: inline-block;
+		padding: 10px 15px;
+		text-decoration: none;
+		color: #fff;
+	}
+
+	nav a:hover {
+		background-color: #666;
+	}
+
+	aside {
+		float: right;
+		width: 30%;
+		height: 200px;
+		margin: 0 0 20px 20px;
+		padding: 20px 0 0 40px;
+		background-color: #ccc;
+	}
+
+	aside h2 {
+		margin: 0 0 10px;
+		font-size: 18px;
+	}
+
+	label {
+		display: block;
+	}
+
+	input {
+		margin-bottom: 20px;
+	}
+
+	footer {
+		padding: 25px 0;
+		background-color: var(--theme-secondary);
+	}
+	</style>
+	<script>
+
+		// Contrast testing function from: https://24ways.org/2010/calculating-color-contrast/
+		function getContrastYIQ(hexcolor){
+			var r = parseInt(hexcolor.substr(0,2),16);
+			var g = parseInt(hexcolor.substr(2,2),16);
+			var b = parseInt(hexcolor.substr(4,2),16);
+			var yiq = ((r*299)+(g*587)+(b*114))/1000;
+			return (yiq >= 128) ? '#000000' : '#ffffff';
+		}
+
+		// RGB to HEX function from: http://jsfiddle.net/Mottie/xcqpF/1/light/
+		function rgb2hex(rgb){
+			rgb = rgb.match(/^rgba?[\s+]?\([\s+]?(\d+)[\s+]?,[\s+]?(\d+)[\s+]?,[\s+]?(\d+)[\s+]?/i);
+
+			return (rgb && rgb.length === 4) ? "#" +
+				("0" + parseInt(rgb[1],10).toString(16)).slice(-2) +
+				("0" + parseInt(rgb[2],10).toString(16)).slice(-2) +
+				("0" + parseInt(rgb[3],10).toString(16)).slice(-2) : '';
+		}
+
+		// Cleans up the color value returned from a CSS variable
+		// Works with Chrome ~52 which returns an escaped string
+		// and tests for RGB which could be returned by Safari
+		function cleanColorValue(value) {
+			let newVal = value;
+
+			// Remove the # from the start of the value
+			if (value.substring(0,1) === '#') {
+				newVal = newVal.substring(1);
+			} else if (value.substring(0,3) === 'rgb') {
+				// If the value is in rgb format (particularly useful because
+				// that's what Safari returns). Convert rgb2hex and return
+				return rgb2hex(value);
+			}
+
+			// When the value starts with a # and a number, JS returns #\3
+			// followed by the first number then a space. Remove the first
+			// 2 characters and remove any spaces
+			if (newVal.substring(0,1) === '\\') {
+				newVal = newVal.substring(2).replace(' ', '');
+			}
+
+			// If we find a short value, translate it into a long value for
+			// the Color picker input type
+			if (newVal.length === 3) {
+				let buffer = '';
+				for (let i=0; i<newVal.length; i++) {
+					buffer+= newVal[i] + newVal[i];
+				}
+
+				newVal = buffer;
+			}
+
+			// Replace the # and return the value
+			return '#' + newVal;
+		}
+
+		function updateTheme() {
+			const inputName = this.getAttribute('name');
+			const newColor = this.value;
+
+			const textColor = getContrastYIQ(newColor.substring(1));
+
+			document.documentElement.style.setProperty('--theme-'+inputName, newColor);
+			document.documentElement.style.setProperty('--theme-text', textColor);
+		}
+
+		function updateSelectors(primaryInput, secondaryInput) {
+			const rootEl = getComputedStyle(document.documentElement);
+			const primaryThemeColor = cleanColorValue(rootEl.getPropertyValue('--theme-primary').trim());
+			const secondaryThemeColor = cleanColorValue(rootEl.getPropertyValue('--theme-secondary').trim());
+
+			primaryInput.value = primaryThemeColor;
+			secondaryInput.value = secondaryThemeColor;
+		}
+
+
+		document.addEventListener('DOMContentLoaded', function() {
+			const primarySelector = document.getElementById('primary-theme-color');
+			const secondarySelector = document.getElementById('secondary-theme-color');
+
+			updateSelectors(primarySelector, secondarySelector);
+
+			primarySelector.addEventListener('input', updateTheme, false);
+			secondarySelector.addEventListener('input', updateTheme, false);
+		});
+
+	</script>
+</head>
+<body>
+	<header>
+		<div class="container">
+			<h1>CSS Variable Themes</h1>
+			<p>A demo using CSS variables how to edit a webpage theme using custom variables.</p>
+		</div>
+	</header>
+	<nav>
+		<div class="container">
+			<ul>
+				<li><a href="#">Home</a></li>
+				<li><a href="#">About</a></li>
+				<li><a href="#">News</a></li>
+				<li><a href="#">Contact</a></li>
+			</ul>
+		</div>
+	</nav>
+	<main>
+		<div class="container">
+			<aside>
+				<h2>Select a new theme:</h2>
+				<label for="primary-theme-color">Primary color</label>
+				<input type="color" id="primary-theme-color" name="primary" value="#ffffff">
+				<label for="secondary-theme-color">Secondary color</label>
+				<input type="color" id="secondary-theme-color" name="secondary" value="#000000">
+			</aside>
+			<p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusm dtempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam,quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodoconsequat. Duis aute irure dolor in reprehenderit in voluptate velit essecillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat nonproident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
+			<p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusm dtempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam,quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodoconsequat. Duis aute irure dolor in reprehenderit in voluptate velit essecillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat nonproident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
+			<p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusm dtempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam,quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodoconsequat. Duis aute irure dolor in reprehenderit in voluptate velit essecillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat nonproident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
+			<p><small>Demo by <a href="http://adamonishi.com">Adam Onishi</a></small></p>
+		</div>
+	</main>
+	<footer>
+		<div class="container">
+
+		</div>
+	</footer>
+</body>
+</html>
